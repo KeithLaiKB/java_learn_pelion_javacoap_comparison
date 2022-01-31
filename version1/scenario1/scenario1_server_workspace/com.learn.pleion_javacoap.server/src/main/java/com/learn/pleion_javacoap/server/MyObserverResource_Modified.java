@@ -20,12 +20,12 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 	private int statusUpdate			=0;
 	private int statusUpdateMaxTimes	=30;
 	//
-	Timer timer = null;
-	MyTimerTaskForUpdate myUpdateTask1 	= null;
+	private Timer timer = null;
+	private MyTimerTaskForUpdate myUpdateTask1 	= null;
 	//
-    String content     	 				= "hello_my_world";
+	private String content     	 				= "hello_my_world";
 	//
-    boolean resourceFinished 			= false;
+	public boolean resourceFinished 			= false;
     
 	
 	public MyObserverResource_Modified(CoapServer coapServer) {

@@ -81,32 +81,17 @@ public class TestMain_RequestObserverOne_Simp {
 		}
 		*/
 		
-		// 你可以在server 那边的myresource 的get方法打个断点, 让server返回的慢一点
-		// 这样你就可以在client这边先看到 hello!!!! 先出现在server返回的playload之前了, 
-		// 也就是能够证明是异步了
-		System.out.println("hello!!!!!!!!!!!!!!!!!!!!!");
-		
-		//---------------------------------------------
-		// 因为 异步，是要等待回传的，等待是需要时间的，
-		// 所以 我不能让程序那么快结束
-		// 所以 我让你输入回车再结束，也就是说 你不输入回车，那么这个总main函数没走完
-		// 从而 有时间 让client等到 传回来的 数据
-		// 不然的话 在等待的过程中，总函数已经运行完了, 所以里面的这些变量啊 线程啊 也有可能没有了？
-        System.out.println("enter to exit!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		try {
-				br.readLine(); 
-		} 
-		catch (IOException e) { }
-		System.out.println("CANCELLATIONING");
-		//resp.proactiveCancel();
-		//resp.cancel(true);
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        //---------------------------------------------
+		// 停留一段时间 让server继续运行
+        while(receivedMessageNum<=expectedReceivedMessageNum) {
+        	try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
 		System.out.println("CANCELLATION FINISHED");
 		client.close();
 	
