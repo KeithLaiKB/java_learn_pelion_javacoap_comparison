@@ -91,6 +91,7 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 			if(statusUpdate<=statusUpdateMaxTimes-1) {
 				//
 				statusUpdate = statusUpdate+1;
+				System.out.println(statusUpdate);
 				try {
 					notifyChange(new String(content+":"+statusUpdate).getBytes(CoapConstants.DEFAULT_CHARSET),MediaTypes.CT_TEXT_PLAIN);
 				} catch (CoapException e) {

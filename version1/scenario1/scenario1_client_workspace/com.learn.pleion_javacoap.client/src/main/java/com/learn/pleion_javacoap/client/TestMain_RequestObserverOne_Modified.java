@@ -1,24 +1,24 @@
 package com.learn.pleion_javacoap.client;
 
-import java.io.BufferedReader;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.net.InetSocketAddress;
-import java.util.concurrent.BlockingQueue;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+
 
 import com.mbed.coap.client.CoapClient;
 import com.mbed.coap.client.CoapClientBuilder;
 import com.mbed.coap.client.ObservationListener;
 import com.mbed.coap.exception.CoapException;
 import com.mbed.coap.packet.CoapPacket;
-import com.mbed.coap.transport.InMemoryCoapTransport;
 
-public class TestMain_RequestObserverOne_Simp {
 
+public class TestMain_RequestObserverOne_Modified {
+	private static int receivedMessageNum 					= 0;
+	private static int expectedReceivedMessageNum			= 30;
 	
 	public static void main(String[] args) {
 		String port1 = "coap://localhost:5656/hello";
@@ -31,13 +31,9 @@ public class TestMain_RequestObserverOne_Simp {
 		String 	myuri1_hostaddr   				= "localhost";
 		int 	myuri1_port 	  				= 5656;
 		String 	myuri1_path   					= "/hello_observer";
-		
-		//CoapClient client2 = new CoapClient(port1);
-		/*
-		CoapClient client = CoapClientBuilder.newBuilder(InMemoryCoapTransport.createAddress(5683))
-                .transport(new InMemoryCoapTransport())
-                .timeout(1000).build();
-		*/
+    	//
+    	
+    	
 		InetSocketAddress inetSocketAddr = new InetSocketAddress(myuri1_hostaddr,myuri1_port);
 		CoapClient client=null;
 		try {
@@ -49,41 +45,29 @@ public class TestMain_RequestObserverOne_Simp {
 		
 		CompletableFuture<CoapPacket> resp = null;
 		try {
-			resp = client.resource(myuri1_path).observe(new SyncObservationListener());
-			/*
+			resp = client.resource(myuri1_path).observe(new MyObservationListener());
+			//
 			if(resp != null) {
-				try {
-					//这样 就相当于 又发送了一次get请求
-					System.out.println("kkkk:"+resp.get().getPayloadString());
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				//用来获取 第一次得到的数据
+				System.out.println(resp.get().getPayloadString().toString());
+				receivedMessageNum = receivedMessageNum +1;
 			}
-			*/
+			//
 		} catch (CoapException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-		}
-		
-		/*
-		try {
-			CoapPacket resp = client.resource("/hello_observer").sync().observe(new SyncObservationListener());
-			if(resp != null) {
-				System.out.println("kkkk:"+resp.getPayloadString());
-			}
-		} catch (CoapException e1) {
+		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		*/
+
 		
         //---------------------------------------------
 		// 停留一段时间 让server继续运行
-        while(receivedMessageNum<=expectedReceivedMessageNum) {
+        while(receivedMessageNum < expectedReceivedMessageNum) {
         	try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
@@ -91,37 +75,31 @@ public class TestMain_RequestObserverOne_Simp {
 				e.printStackTrace();
 			}
         }
-        
-		System.out.println("CANCELLATION FINISHED");
+        //
+		//-----
+        System.out.println("kkk");
 		client.close();
 	
 	}
 	
-	
-    public static class SyncObservationListener implements ObservationListener {
-
-        BlockingQueue<CoapPacket> queue = new LinkedBlockingQueue<>();
+	/**
+	 * ObservationListener
+	 * ref: java-coap/coap-core/src/test/java/protocolTests/ObservationTest.java
+	 * 
+	 * @author laipl
+	 *
+	 */
+    public static class MyObservationListener implements ObservationListener {
 
         @Override
         public void onObservation(CoapPacket obsPacket) throws CoapException {
-            System.out.println("ADD!!!!!!!"+obsPacket.getPayloadString());
-            queue.add(obsPacket);
-        }
-
-        public CoapPacket take() throws InterruptedException {
-            System.out.println("TAKE!!!!!!!");
-            return queue.poll(5, TimeUnit.SECONDS); // avoid test blocking
-            //            return queue.take();
-        }
-
-        public CoapPacket take(int timeout, TimeUnit timeUnit) throws InterruptedException {
-            return queue.poll(timeout, timeUnit);
+            System.out.println(obsPacket.getPayloadString());
+            receivedMessageNum = receivedMessageNum +1;
         }
 
         @Override
         public void onTermination(CoapPacket obsPacket) throws CoapException {
         	System.out.println("term!!!!!!!"+obsPacket.getPayloadString());
-            queue.add(obsPacket);
         }
     }
 }
