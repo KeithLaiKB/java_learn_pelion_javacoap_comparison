@@ -15,9 +15,18 @@ import com.mbed.coap.server.CoapServer;
 
 public class MyObserverResource_Modified extends AbstractObservableResource{
 
+
+	//private int int_connect_get_num=0;
+	private int statusUpdate			=0;
+	private int statusUpdateMaxTimes	=30;
+	//
 	Timer timer = null;
-	private int int_connect_get_num=0;
-	private int int_mytask_used=0;
+	MyTimerTaskForUpdate myUpdateTask1 	= null;
+	//
+    String content     	 				= "hello_my_world";
+	//
+    boolean resourceFinished 			= false;
+    
 	
 	public MyObserverResource_Modified(CoapServer coapServer) {
 		super(coapServer);
@@ -31,40 +40,20 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 		//Timer timer = new Timer();
 		timer = new Timer();
 		// 每10000ms 则去 执行一次 里面那个run 的 changed 从而通知所有的client, 通知的时候调用handleGet
-		timer.schedule(new UpdateTask(),0, 5000);
+		timer.schedule(new MyTimerTaskForUpdate(),0, 5000);
 	}
-	/*
-    public MyObserverResource_Modified(String body, CoapServer coapServer) {
-        super(coapServer);
-        //this.body = body.getBytes(DEFAULT_CHARSET);
-		//
-		//----------------------------------------
-		//
-		// schedule a periodic update task, otherwise let events call changed()
-		//Timer timer = new Timer();
-		timer = new Timer();
-		// 每10000ms 则去 执行一次 里面那个run 的 changed 从而通知所有的client, 通知的时候调用handleGet
-		timer.schedule(new UpdateTask(),0, 5000);
-    }
-
-    public MyObserverResource_Modified(String body, CoapServer coapServer, boolean includeObservableFlag) {
-        super(coapServer, includeObservableFlag);
-        //this.body = body.getBytes(DEFAULT_CHARSET);
-		//
-		//----------------------------------------
-		//
-		// schedule a periodic update task, otherwise let events call changed()
-		//Timer timer = new Timer();
-		timer = new Timer();
-		// 每10000ms 则去 执行一次 里面那个run 的 changed 从而通知所有的client, 通知的时候调用handleGet
-		timer.schedule(new UpdateTask(),0, 5000);
-        
-    }
-*/
-    
+	
 	
 	@Override
 	public void get(CoapExchange exchange) throws CoapCodeException {
+		System.out.println("--------------------------------------------------------------------");
+		System.out.println("--------- server side get method start -----------------------------");
+		exchange.setResponseBody(content+":"+statusUpdate);
+        exchange.getResponseHeaders().setContentFormat(MediaTypes.CT_TEXT_PLAIN);
+        exchange.setResponseCode(Code.C205_CONTENT);
+        exchange.sendResponse();
+		System.out.println("--------- server side get method end -------------------------------");
+		System.out.println("--------------------------------------------------------------------");
 		/*
 		// TODO Auto-generated method stub
 		int_connect_get_num = int_connect_get_num +1;
@@ -92,22 +81,27 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 	 * @author laipl
 	 *
 	 */
-	private class UpdateTask extends TimerTask {
+	private class MyTimerTaskForUpdate extends TimerTask {
 		@Override
 		public void run() {
 			System.out.println("UpdateTask-------name:"+MyObserverResource_Modified.this.getClass().getName());
 			//
-			int_mytask_used = int_mytask_used+1;
 			// .. periodic update of the resource
-			//changed(); // notify all observers
-			//((AbstractObservableResource)(MyObserverResource_Modified.this)).notifyChange(new String("kalloooo!"+int_mytask_used).getBytes(),Code.C205_CONTENT);
-			//MyObserverResource_Modified.this.mynotifyChange(new String("kalloooo!"+int_mytask_used).getBytes(CoapConstants.DEFAULT_CHARSET),MediaTypes.CT_TEXT_PLAIN);
-			try {
-				notifyChange(new String("kalloooo!"+int_mytask_used).getBytes(CoapConstants.DEFAULT_CHARSET),MediaTypes.CT_TEXT_PLAIN);
-			} catch (CoapException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			// 为了保持 与Mqtt 测量的方式 相同, 当信息更新次数>statusUpdateMaxTimes-1时, 不再发送信息给 client
+			if(statusUpdate<=statusUpdateMaxTimes-1) {
+				//
+				statusUpdate = statusUpdate+1;
+				try {
+					notifyChange(new String(content+":"+statusUpdate).getBytes(CoapConstants.DEFAULT_CHARSET),MediaTypes.CT_TEXT_PLAIN);
+				} catch (CoapException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} // notify all observers
 			}
+			else {
+				resourceFinished = true;
+			}
+			// 类比于 mqtt 它每一次信息自己更新
 		}
 	}
 
