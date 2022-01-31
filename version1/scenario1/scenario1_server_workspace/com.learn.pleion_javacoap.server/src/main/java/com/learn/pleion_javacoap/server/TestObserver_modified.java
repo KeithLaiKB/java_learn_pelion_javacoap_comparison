@@ -20,8 +20,6 @@ public class TestObserver_modified {
 		int 	myuri1_port 	  				= 5656;
 		String 	myuri1_path   					= "/hello_observer";
 		
-		Short a;
-		System.out.println(a);
 		
 		
 		// ref:java-coap/coap-core/src/test/java/protocolTests/ObservationTest.java 
