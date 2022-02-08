@@ -40,7 +40,8 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 		//Timer timer = new Timer();
 		timer = new Timer();
 		// 每10000ms 则去 执行一次 里面那个run 的 changed 从而通知所有的client, 通知的时候调用handleGet
-		timer.schedule(new MyTimerTaskForUpdate(),0, 5000);
+		myUpdateTask1 = new MyTimerTaskForUpdate();
+		timer.schedule(myUpdateTask1,0, 5000);
 	}
 	
 	
