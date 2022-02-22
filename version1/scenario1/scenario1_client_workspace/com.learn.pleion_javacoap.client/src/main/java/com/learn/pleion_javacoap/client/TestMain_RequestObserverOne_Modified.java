@@ -32,7 +32,7 @@ public class TestMain_RequestObserverOne_Modified {
 		int 	myuri1_port 	  				= 5656;
 		String 	myuri1_path   					= "/hello_observer";
     	//
-    	
+
     	
 		InetSocketAddress inetSocketAddr = new InetSocketAddress(myuri1_hostaddr,myuri1_port);
 		CoapClient client=null;

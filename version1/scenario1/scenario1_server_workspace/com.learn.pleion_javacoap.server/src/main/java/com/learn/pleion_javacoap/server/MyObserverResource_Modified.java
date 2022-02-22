@@ -18,7 +18,7 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 
 	//private int int_connect_get_num=0;
 	private int statusUpdate			=0;
-	private int statusUpdateMaxTimes	=30;
+	private int statusUpdateMaxTimes	=35;
 	//
 	private Timer timer = null;
 	private MyTimerTaskForUpdate myUpdateTask1 	= null;
@@ -41,7 +41,7 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 		timer = new Timer();
 		// 每10000ms 则去 执行一次 里面那个run 的 changed 从而通知所有的client, 通知的时候调用handleGet
 		myUpdateTask1 = new MyTimerTaskForUpdate();
-		timer.schedule(myUpdateTask1,0, 5000);
+		timer.schedule(myUpdateTask1,0, 1000);
 	}
 	
 	
