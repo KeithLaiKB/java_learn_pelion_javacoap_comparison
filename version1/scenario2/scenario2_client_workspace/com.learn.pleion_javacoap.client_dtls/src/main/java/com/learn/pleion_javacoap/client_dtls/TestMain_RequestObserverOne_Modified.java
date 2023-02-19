@@ -53,7 +53,7 @@ public class TestMain_RequestObserverOne_Modified {
 		//int 	myuri1_port 	  				= 5656;
 		String 	myuri1_hostaddr   				= "192.168.239.137";
 		int 	myuri1_port 	  				= 5684;
-		String 	myuri1_path   					= "/hello_observer";
+		String 	myuri1_path   					= "/Resource1";
 		
 		
 		String serverPemCertificate					="mykeystorepem.pem";
@@ -78,7 +78,7 @@ public class TestMain_RequestObserverOne_Modified {
 		String serverCaCrt_file					="s_cacert.crt";
 		//public String serverCaCrt_file					="s_cacert.pem";
 		//public String serverCaCrt_file_dir				="/mycerts/my_own/samecn";	//从这里就可以看出, 我如果用不正确的证书会出问题的
-		String serverCaCrt_file_dir				="/mycerts/my_own";
+		String serverCaCrt_file_dir				="/mycerts/other_own";
 		String serverCaCrt_file_loc = null;
 		
 		

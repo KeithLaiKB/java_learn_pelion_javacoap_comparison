@@ -48,7 +48,7 @@ public class TestObserverMain_Mwe_try {
 		//int 	myuri1_port 	  				= 5656;
 		String 	myuri1_hostaddr   				= "192.168.239.137";
 		int 	myuri1_port 	  				= 5684;
-		String 	myuri1_path   					= "/hello_observer";
+		String 	myuri1_path   					= "/Resource1";
 		
 		
 		String serverCaCrt_file					="s_cacert.crt";
@@ -260,7 +260,7 @@ public class TestObserverMain_Mwe_try {
 		MyObserverResource_Con_Mwe myobResc1 = new MyObserverResource_Con_Mwe(server);
 		// 注意 这里的 hello 大小写是敏感的
 		// 因为 client那边 是根据 coap://localhost:5656/hello 来发送请求的
-		server.addRequestHandler(myuri1_path, myobResc1);
+		server.addRequestHandler("/Resource1", myobResc1);
 		//server.setObservationHandler(myobResc1);
 		try {
 			server.start();
