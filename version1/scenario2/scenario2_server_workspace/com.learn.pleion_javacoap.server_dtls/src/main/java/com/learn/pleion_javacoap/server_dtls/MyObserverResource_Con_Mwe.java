@@ -24,6 +24,7 @@ public class MyObserverResource_Con_Mwe extends AbstractObservableResource{
 	Timer timer = null;
 	private int int_connect_get_num=0;
 	private int int_mytask_used=0;
+	private String content     	 				= "hello";
 	
 	public MyObserverResource_Con_Mwe(CoapServer coapServer) {
 		super(coapServer);
@@ -59,7 +60,8 @@ public class MyObserverResource_Con_Mwe extends AbstractObservableResource{
 		//
 		//exchange.respond(ResponseCode.CONTENT, "task used num:"+int_mytask_used);
 		//
-		exchange.setResponseBody("task used num:"+int_mytask_used);
+		//exchange.setResponseBody("task used num:"+int_mytask_used);
+		exchange.setResponseBody(content+":"+int_mytask_used);
         exchange.getResponseHeaders().setContentFormat(MediaTypes.CT_TEXT_PLAIN);	// 可以不写, 默认 MediaTypes.CT_TEXT_PLAIN			
 		exchange.setResponseCode(Code.C205_CONTENT);								// 可以不写, 默认 MediaTypes.C205_CONTENT
 		exchange.sendResponse();
@@ -87,7 +89,7 @@ public class MyObserverResource_Con_Mwe extends AbstractObservableResource{
 				// 记得 这里 如果修改了 content type 记得看一下 你需不需要把get也改了
 				// 因为 client 去 observe, 它所获得的第一条信息 是来自于 get(CoapExchange exchange) 方法
 				// 而不是这里这个方法
-				notifyChange(new String("hello:"+int_mytask_used).getBytes(CoapConstants.DEFAULT_CHARSET),MediaTypes.CT_TEXT_PLAIN); 	// 这里 notifyChange的最少要求两个参数 你输入 MediaTypes.CT_TEXT_PLAIN	
+				notifyChange(new String(content+":"+int_mytask_used).getBytes(CoapConstants.DEFAULT_CHARSET),MediaTypes.CT_TEXT_PLAIN); 	// 这里 notifyChange的最少要求两个参数 你输入 MediaTypes.CT_TEXT_PLAIN	
 			} catch (CoapException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

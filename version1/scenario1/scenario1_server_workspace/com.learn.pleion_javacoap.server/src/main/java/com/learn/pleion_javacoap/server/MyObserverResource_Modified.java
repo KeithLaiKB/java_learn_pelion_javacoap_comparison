@@ -23,7 +23,8 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 	private Timer timer = null;
 	private MyTimerTaskForUpdate myUpdateTask1 	= null;
 	//
-	private String content     	 				= "hello_my_world";
+	//private String content     	 				= "hello_my_world";
+	private String content     	 				= "hello";
 	//
 	public boolean resourceFinished 			= false;
     
