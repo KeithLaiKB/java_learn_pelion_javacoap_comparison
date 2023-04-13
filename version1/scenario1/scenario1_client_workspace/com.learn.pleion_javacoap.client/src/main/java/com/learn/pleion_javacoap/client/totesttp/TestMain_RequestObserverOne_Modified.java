@@ -45,6 +45,12 @@ public class TestMain_RequestObserverOne_Modified {
 		
 		CompletableFuture<CoapPacket> resp = null;
 		try {
+			//resp = client.resource(myuri1_path).maxAge(10L).get();																		//测试 get_con 单个get请求情况下  是否 包含 多个option
+			//resp = client.resource(myuri1_path).maxAge(10L).payload("cs".getBytes()).get();												//测试 get_con 单个get请求情况下 是否 包含payload
+			
+			//resp = client.resource(myuri1_path).maxAge(10L).observe(new MyObservationListener()); 											//测试 get_con   observer的情况下   是否 包含option
+			//resp = client.resource(myuri1_path).maxAge(10L).payload("test_obrq_payload".getBytes()).observe(new MyObservationListener()); 	//测试 get_con   observer的情况下   是否 包含payload
+			
 			resp = client.resource(myuri1_path).observe(new MyObservationListener());
 			//
 			if(resp != null) {

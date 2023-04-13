@@ -34,7 +34,7 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 		// TODO Auto-generated constructor stub
 		//
 		//
-		this.setConNotifications(false);		// configure the notification type to NONs, 如果不写这个默认的是 CON
+		this.setConNotifications(true);		// configure the notification type to NONs, 如果不写这个默认的是 CON
 		//----------------------------------------
 		//
 		// schedule a periodic update task, otherwise let events call changed()
@@ -52,11 +52,21 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 		System.out.println("--------- server side get method start -----------------------------");
 		//exchange.setResponseBody(content+":"+statusUpdate);
 		
+		
+		//测试 get_con packet 包是否 包含payload
+		if(exchange.getRequest().getPayloadString()!=null) {
+			System.out.println(exchange.getRequest().getPayloadString());
+		}
+		
+		
+		
 		//exchange.setResponseBody("");
 		exchange.setResponseBody(content+statusUpdate);
         exchange.getResponseHeaders().setContentFormat(MediaTypes.CT_TEXT_PLAIN);		//这个会影响到server to client的 ACK的包中 是否会有 option 关于content-format			
-        exchange.setResponseCode(Code.C205_CONTENT);									//虽然默认有 , 为了统一和谐
+        exchange.getResponseHeaders().setMaxAge(10L);									//测试 在ACK 包会不会 多出这个option, 也就是验证这些包是否可以带多个option	
         
+        exchange.setResponseCode(Code.C205_CONTENT);									//虽然默认有 , 为了统一和谐
+
         exchange.sendResponse();
 		System.out.println("--------- server side get method end -------------------------------");
 		System.out.println("--------------------------------------------------------------------");
@@ -108,6 +118,9 @@ public class MyObserverResource_Modified extends AbstractObservableResource{
 					//notifyChange(new String(content+statusUpdate).getBytes(CoapConstants.DEFAULT_CHARSET),MediaTypes.CT_TEXT_PLAIN);
 					
 					notifyChange(new String(content+statusUpdate).getBytes(),MediaTypes.CT_TEXT_PLAIN);
+					//notifyChange(new String(content+statusUpdate).getBytes(),MediaTypes.CT_TEXT_PLAIN,"iametag".getBytes()); 	//测试 CON 和 NON包会不会 多出这个option, 也就是验证这些包是否可以带多个option	
+					
+					
 					//notifyChange(new String("").getBytes(),MediaTypes.CT_TEXT_PLAIN); //不可以设置成null.getBytes
 					//notifyChange(null,MediaTypes.CT_TEXT_PLAIN); // 运行会错误
 					//notifyChange(null,null); 					// 运行会错误
